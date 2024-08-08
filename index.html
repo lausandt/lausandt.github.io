@@ -13,9 +13,10 @@
         <header id="banner" class="body">
                 <h1><a href="/">Lau Sandt's thoughts on programming & wine</a></h1>
                 <nav><ul>
-                    <li><a href="/pages/about.html">About</a></li>
-                    <li><a href="/pages/contact.html">Contact</a></li>
+                    <li><a href="/pages/about.html">about</a></li>
+                    <li><a href="/pages/contact.html">contact</a></li>
                     <li><a href="/category/posts.html">posts</a></li>
+                    <li><a href="/category/reviews.html">reviews</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
@@ -55,7 +56,7 @@ def n_plus_six_times_four(n: Number) -&gt; Number:
     return times_four(plus_six(n))
 </code></pre></div>
 
-<p>There are two ways to continue: just accept function composition as a fact and just use it; let's call it the practical way, which is perfectly fine even for a programmer. Or do it the curious way and try to understand function composition a bit deeper. For me, I was only able to really appreciate function composition on a deeper level once I got introduced to Haskell at uni.</p>
+<p>There are two ways to continue: just accept function composition as a fact and just use it; let's call it the practical way, which is perfectly fine even for a developer. Or do it the curious way and try to understand function composition a bit deeper. For me, I was only able to really appreciate function composition on a deeper level once I got introduced to Haskell at uni.</p>
 <p>While learning Haskell, you will get introduced to concepts like monoids, functors, and monads. Trying to understand these concepts is not easy, for you can do very powerful things with these concepts, yet they are deceptively simple. This combination, for me, makes them strangely complicated to grasp. These concepts come from Category Theory, a mathematical theory "competing" with Set Theory as foundational to mathematics itself.</p>
 <p>Category Theory is a very interesting rabbit hole; you can get lost in it, as I am, but it has wonderful explicative powers. The process of function composition can get its theoretical foundations in Category Theory. A category (this not a rigorous definition, see <a href="https://en.wikipedia.org/wiki/Category_theory">wikipedia</a> for one) is a simple beast. It is basically nothing more than a class of objects and a class of morphisms to allow you to go from an object to another object. These morpisms are also known as arrows or mappings. </p>
 <p>To me this sounds like a function. A function is after all nothing more than a mapping from some domain to a codomain, often written as <span class="math">\(A \rightarrow B\)</span> Finally, a category has a binary operation called composition.</p>
@@ -166,6 +167,38 @@ def n_plus_six_times_four(n: Number) -&gt; Number:
 }
 </script>                </article>
             </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/data-analysis-with-python-and-pyspark.html" rel="bookmark"
+                           title="Permalink to Data Analysis with Python and PySpark">Data Analysis with Python and PySpark</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2024-08-05T00:00:00+02:00">
+                Published: ma 05 augustus 2024
+        </abbr>
+		<br />
+        <abbr class="modified" title="2024-08-06T00:00:00+02:00">
+                Updated: di 06 augustus 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/lau-sandt.html">Lau Sandt</a>
+        </address>
+<p>In <a href="/category/reviews.html">reviews</a>.</p>
+
+</footer><!-- /.post-info -->                <p>A review of Johnathan Rioux's Data Analysis with Python and PySpark</p>
+                <a class="readmore" href="/data-analysis-with-python-and-pyspark.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
