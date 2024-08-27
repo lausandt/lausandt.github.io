@@ -4,9 +4,10 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>Lau Sandt's thoughts on programming & wine</title>
+        <title>Mapping Functions of Multiple Arguments</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Lau Sandt's thoughts on programming & wine Atom Feed" />
+        <meta name="description" content="A look at how the Applicative Functor allows you to map a group of functions." />
 </head>
 
 <body id="index" class="home">
@@ -15,14 +16,19 @@
                 <nav><ul>
                     <li><a href="/pages/about.html">about</a></li>
                     <li><a href="/pages/contact.html">contact</a></li>
-                    <li><a href="/category/posts.html">posts</a></li>
+                    <li class="active"><a href="/category/posts.html">posts</a></li>
                     <li><a href="/category/reviews.html">reviews</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/mapping-functions-of-multiple-arguments.html" rel="bookmark"
+           title="Permalink to Mapping Functions of Multiple Arguments">Mapping Functions of Multiple Arguments</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/mapping-functions-of-multiple-arguments.html">Mapping Functions of Multiple Arguments</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2024-08-27T00:00:00+02:00">
                 Published: di 27 augustus 2024
@@ -37,7 +43,7 @@
         </address>
 <p>In <a href="/category/posts.html">posts</a>.</p>
 
-</footer><!-- /.post-info --><h2>Mapping Functions of Multiple Arguments</h2>
+</footer><!-- /.post-info -->      <h2>Mapping Functions of Multiple Arguments</h2>
 <p>Where the Functor is a generalisation of the map function. Generalised in the sense that it does not matter what the underlying structure is, as long as it is an instance of a functor, applying a function to that Functor will not change that underlying structure. In other words, fmap is a generalisation of map on the underlying structure.</p>
 <p>An applicative functor is a further generalisation of the map function, but now we are not generalising on the underlying structure but on the type of function that our map function accepts as argument. The functorial map only accepts a function with a single argument (a -&gt; b). We can see this from the definition of fmap:</p>
 <div class="highlight"><pre><span></span><code><span class="n">fmap</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">Functor</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">b</span>
@@ -138,66 +144,11 @@ Bin (Bin Leaf 9 (Bin Leaf 11 Leaf)) 7 (Bin Leaf 13 (Bin Leaf 15 Leaf))
 <div class="highlight"><pre><span></span><code><span class="n">instance</span><span class="w"> </span><span class="n">Applicative</span><span class="w"> </span><span class="err">[]</span><span class="w"> </span><span class="k">where</span><span class="w"> </span>
 <span class="w">  </span><span class="n">pure</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">x</span><span class="o">]</span>
 <span class="w">  </span><span class="n">fs</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">gs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">f x  | f &lt;- fs, x &lt;- xs</span><span class="o">]</span>
-</code></pre></div>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</code></pre></div>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/function-composition-a-deeper-look.html" rel="bookmark"
-                           title="Permalink to Function composition a deeper look">Function composition a deeper look</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2024-08-07T00:00:00+02:00">
-                Published: wo 07 augustus 2024
-        </abbr>
-		<br />
-        <abbr class="modified" title="2024-08-07T00:00:00+02:00">
-                Updated: wo 07 augustus 2024
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/lau-sandt.html">Lau Sandt</a>
-        </address>
-<p>In <a href="/category/posts.html">posts</a>.</p>
-
-</footer><!-- /.post-info -->                <p>A look at how Category Theory underpins function composition.</p>
-                <a class="readmore" href="/function-composition-a-deeper-look.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/data-analysis-with-python-and-pyspark.html" rel="bookmark"
-                           title="Permalink to Data Analysis with Python and PySpark">Data Analysis with Python and PySpark</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2024-08-05T00:00:00+02:00">
-                Published: ma 05 augustus 2024
-        </abbr>
-		<br />
-        <abbr class="modified" title="2024-08-06T00:00:00+02:00">
-                Updated: di 06 augustus 2024
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/lau-sandt.html">Lau Sandt</a>
-        </address>
-<p>In <a href="/category/reviews.html">reviews</a>.</p>
-
-</footer><!-- /.post-info -->                <p>A review of Johnathan Rioux's Data Analysis with Python and PySpark</p>
-                <a class="readmore" href="/data-analysis-with-python-and-pyspark.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
