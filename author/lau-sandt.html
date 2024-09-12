@@ -22,14 +22,14 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/mapping-functions-of-multiple-arguments.html">Mapping Functions of Multiple Arguments</a></h1>
+                    <h1 class="entry-title"><a href="/function-composition-a-deeper-look.html">Function composition a deeper look</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2024-08-27T00:00:00+02:00">
-                Published: di 27 augustus 2024
+        <abbr class="published" title="2024-08-07T00:00:00+02:00">
+                Published: wo 07 augustus 2024
         </abbr>
 		<br />
-        <abbr class="modified" title="2024-08-27T00:00:00+02:00">
-                Updated: di 27 augustus 2024
+        <abbr class="modified" title="2024-08-07T00:00:00+02:00">
+                Updated: wo 07 augustus 2024
         </abbr>
 
         <address class="vcard author">
@@ -37,108 +37,142 @@
         </address>
 <p>In <a href="/category/posts.html">posts</a>.</p>
 
-</footer><!-- /.post-info --><h2>Mapping Functions of Multiple Arguments</h2>
-<p>Where the Functor is a generalisation of the map function. Generalised in the sense that it does not matter what the underlying structure is, as long as it is an instance of a functor, applying a function to that Functor will not change that underlying structure. In other words, fmap is a generalisation of map on the underlying structure.</p>
-<p>An applicative functor is a further generalisation of the map function, but now we are not generalising on the underlying structure but on the type of function that our map function accepts as argument. The functorial map only accepts a function with a single argument (a -&gt; b). We can see this from the definition of fmap:</p>
-<div class="highlight"><pre><span></span><code><span class="n">fmap</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">Functor</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">b</span>
+</footer><!-- /.post-info --><p>What is computer programming but the decomposition of computable problems into smaller problems, if necessary, the decomposition of the smaller problems into even smaller problems, and so on. Writing code to solve the smallest of the decomposed problems and composing those smaller solutions to create a solution to our larger problem.</p>
+<p>A function is the manner with which we calculate the solution to our smallest problem. We give our function some input, and we get some output. If we decompose our problem, we inevitably need to recompose our set of smaller solutions to larger solutions. The mathematical idea of function composition is a natural fit to achieve this.</p>
+<p>Let me give a small example of function composition. Say you want to add a number to some number and then multiply the result; that is function composition. <span class="math">\((n + 6) \times 4\)</span> We take two functions, addition and multiplication, and compose them. We have done this since primary school. </p>
+<p>We can do the same in programming languages. For example, in Python, you would write something like:</p>
+<div class="highlight"><pre><span></span><code>def n_plus_six_times_four(n: Number) -&gt; Number:
+    return (n+6)*4
 </code></pre></div>
 
-<p>With a functorial map (fmap) we can do this: <code>fmap succ [1,2,3] = [2,3,4]</code></p>
-<p>But we cannot do:</p>
-<div class="highlight"><pre><span></span><code>x = [1,2,3,4,5]
-y = [101,102,103,104,105]
+<p>or if we really wanted to express the composition, we would write:</p>
+<div class="highlight"><pre><span></span><code>def plus_six(n: Number) -&gt; Number:
+    return n + 6
 
-fmap (fmap (+) x) y
+def times_four(n: Number) -&gt; Number:
+    return n*4
+
+def n_plus_six_times_four(n: Number) -&gt; Number:
+    return times_four(plus_six(n))
 </code></pre></div>
 
-<p>Which is kind of odd when you think about partial function application in Haskell. I can do:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">fmap</span><span class="w"> </span><span class="ss">(</span><span class="o">+</span><span class="mi">1</span><span class="ss">)</span><span class="w"> </span>[<span class="mi">1</span>,<span class="mi">2</span>,<span class="mi">3</span>]<span class="w"> </span>
+<p>There are two ways to continue: just accept function composition as a fact and just use it; let's call it the practical way, which is perfectly fine even for a developer. Or do it the curious way and try to understand function composition a bit deeper. For me, I was only able to really appreciate function composition on a deeper level once I got introduced to Haskell at uni.</p>
+<p>While learning Haskell, you will get introduced to concepts like monoids, functors, and monads. Trying to understand these concepts is not easy, for you can do very powerful things with these concepts, yet they are deceptively simple. This combination, for me, makes them strangely complicated to grasp. These concepts come from Category Theory, a mathematical theory "competing" with Set Theory as foundational to mathematics itself.</p>
+<p>Category Theory is a very interesting rabbit hole; you can get lost in it, as I am, but it has wonderful explanatory powers. The process of function composition can get its theoretical foundations in Category Theory. A category (this not a rigorous definition, see <a href="https://en.wikipedia.org/wiki/Category_theory">wikipedia</a> for one) is a simple beast. It is basically nothing more than a class of objects and a class of morphisms to allow you to go from an object to another object. </p>
+<p>These morpisms are also known as arrows or mappings. To me this sounds like a function. A function is after all nothing more than a mapping from some domain to a codomain, often written as <span class="math">\(A \rightarrow B\)</span>.</p>
+<p>Finally, a category has a binary operation called composition. Given that I have the mappings <span class="math">\(A \rightarrow B\)</span> &amp; <span class="math">\(B \rightarrow C\)</span> When I compose these mappings <span class="math">\(A \rightarrow B \circ B \rightarrow C \implies A \rightarrow C\)</span> </p>
+<p>There are some rules to such a composition in Category Theory.</p>
+<ol>
+<li>function composition is associative it adheres to the associative law <span class="math">\(h \cdot (g \cdot f) = (h \cdot g) \cdot f \quad \forall f,g,h \in S\)</span> For instance addition is a binary operation that is associative. <span class="math">\((3 + 4) + 5 = 3 + (4 + 5)\)</span> </li>
+<li>for every object A there is an identity on A such that the composition of <span class="math">\(f \cdot id_a = f \quad \land \quad id_a \cdot f = f\)</span></li>
+</ol>
+<p>And if we see our objects as sets and our morphisms as functions, suddenly we have our theoretical underpinnings of function composition!</p>
+<p>These ideas are extremely easy to express in Haskell:</p>
+<div class="highlight"><pre><span></span><code><span class="o">--</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">twop</span><span class="w"> </span><span class="n">mappings</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kr">and</span><span class="w"> </span><span class="n">g</span>
+<span class="n">f</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="n">g</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span>
 
-<span class="nv">but</span><span class="w"> </span><span class="nv">I</span><span class="w"> </span><span class="nv">can</span><span class="err">&#39;t do</span>
+<span class="n">composition</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="n">composition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">\</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
 
-<span class="err">amap [(+1),(+2),(+3)] [4,5,6] = [5,7,9]</span>
+<span class="o">--</span><span class="w"> </span><span class="kr">In</span><span class="w"> </span><span class="n">Haskell</span><span class="w"> </span><span class="n">there</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">composition</span><span class="w"> </span><span class="n">operator</span><span class="w"> </span><span class="p">(.)</span>
+<span class="p">(.)</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+
+<span class="o">--</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">mapping</span><span class="w"> </span><span class="n">h</span><span class="w"> </span>
+<span class="n">h</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">d</span>
+
+<span class="n">associativity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="n">g</span><span class="w"> </span>
+<span class="o">--</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">put</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">brackets</span><span class="w"> </span><span class="n">where</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="kr">or</span><span class="w"> </span><span class="n">just</span><span class="w"> </span><span class="n">leave</span><span class="w"> </span><span class="n">them</span><span class="w"> </span><span class="n">out</span>
+
+<span class="n">id</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="n">id</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span>
 </code></pre></div>
 
-<p>At least I can write the signature for this function:</p>
-<p><code>amap :: [a -&gt; b] -&gt; [a] -&gt; [b]</code> </p>
-<p>or more general</p>
-<p><code>amap :: f (a -&gt; b) -&gt; f a -&gt; f b</code></p>
-<p>But that solves only the first part of the problem; we still need to apply (+) to the list and get back a list of partially applied functions. Again, it helps to look at fmap and our amap functions. These are very similar:</p>
-<div class="highlight"><pre><span></span><code><span class="n">fmap</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">Functor</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">b</span>
-<span class="n">amap</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">b</span>
+<p>In Python we can do the same quite easily:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">Callable</span><span class="p">,</span><span class="w"> </span><span class="n">Collection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">reduce</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">comp</span><span class="p">(</span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="n">Callable</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="w"> </span><span class="n">Callable</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Callable</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">lambda</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">kw</span><span class="p">:</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">kw</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compose</span><span class="p">(</span><span class="o">*</span><span class="n">fs</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Callable</span><span class="p">:</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">reduce</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span><span class="w"> </span><span class="n">fs</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">h</span><span class="p">(</span><span class="n">x</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="mi">1</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">g</span><span class="p">(</span><span class="n">x</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="mi">2</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="mi">3</span>
+
+<span class="n">cf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compose</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+<span class="c1"># will result in 9</span>
+<span class="n">cf</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">identity</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="n">Any</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
 </code></pre></div>
 
-<p>We would just need to have a function that takes our (a -&gt; b) and wraps it with an f: <code>wrap :: Functor f =&gt; a -&gt; f a</code>. For instance, we want to wrap our partially applied function. But most important, we do not want to change our function. Say we want to wrap the number 42 in a Maybe, 42 should not change. <code>wrap 42 :: Maybe Int = Just 42</code></p>
-<p>These are exactly the two functions of the Applicative Functor class that need to be implemented for any type to be an instance of the Applicative class.</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">Functor</span> <span class="nb">f</span> =&gt; <span class="n">Applicative</span> <span class="nb">f</span> <span class="n">where</span>
-  <span class="n">pure</span>  :: <span class="n">a</span> -&gt; <span class="nb">f</span> <span class="n">a</span>
-  (<span class="s">&lt;*&gt;) :: f (a -&gt;</span> <span class="n">b</span>) -&gt; <span class="nb">f</span> <span class="n">a</span> -&gt; <span class="nb">f</span> <span class="n">b</span>
-</code></pre></div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
 
-<p>If I now run this GHCI <code>pure (+) &lt;*&gt; [1,2,3] &lt;*&gt; [4,5.6] = [5,7,9]</code> our problem is solved. Cool problem is solved, but what is the use case of this? </p>
-<p>Say we want a function that maps a function that itself takes two arguments and has two lists of arguments as input.
-1. A function that takes two arguments, for instance (+), we could make that generic by writing (a -&gt; b -&gt; c).
-2. A list of similar types of arguments [a]
-3. Another list of similar types of arguments [b]</p>
-<p>To write a function like this is not that complicated.</p>
-<div class="highlight"><pre><span></span><code><span class="n">lift2</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">a</span><span class="o">]</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">b</span><span class="o">]</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">c</span><span class="o">]</span>
-<span class="n">lift2</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">f x y | x &lt;- xs, y &lt;- ys</span><span class="o">]</span>
-</code></pre></div>
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
 
-<p>However, we can immediately see a problem with this. What if we want to apply a function with three arguments, four, or N arguments? We cannot write N functions to cover all possibilities, but given the Applicative we need not. We could rewrite the function above as. </p>
-<div class="highlight"><pre><span></span><code><span class="n">lift2</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">a</span><span class="o">]</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">b</span><span class="o">]</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">c</span><span class="o">]</span>
-<span class="n">lift2</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pure</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">ys</span>
-</code></pre></div>
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
 
-<p>Now, if we want to lift a function with three arguments, we could simply write:</p>
-<div class="highlight"><pre><span></span><code><span class="n">lift3</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">a</span><span class="o">]</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">b</span><span class="o">]</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">c</span><span class="o">]</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">[</span><span class="n">d</span><span class="o">]</span>
-<span class="n">lift3</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="n">zs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pure</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">zs</span><span class="w"> </span>
-</code></pre></div>
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
 
-<p>We have achieved our generalisation on the amount of arguments that a function takes. We have also preserved the generalisation on the structure by insisting that an Applicative instance is also a Functor instance. This is true, as we can see from the fact that we could implement fmap with our Applicative functions. </p>
-<div class="highlight"><pre><span></span><code><span class="n">fmap</span><span class="s">&#39; :: Applicative a =&gt; (a -&gt; b) -&gt; f a -&gt; f b</span>
-<span class="s">fmap&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pure</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">x</span>
-</code></pre></div>
-
-<p>so we can rewrite our lift function as </p>
-<p>liftA2 :: Applicative f =&gt; (a -&gt; b) - f a -&gt; f b -&gt; f c
-liftA2 f xs ys = pure f &lt;<em>&gt; xs &lt;</em>&gt; ys  </p>
-<p>Which is exactly how the Applicative functor defines it. </p>
-<p>I could now create a binary tree that is a member of the Applicative class.</p>
-<div class="highlight"><pre><span></span><code>{-# LANGUAGE InstanceSigs #-}
-module BinaryTree, where 
-
-data Tree a = Leaf | Bin (Tree a) a (Tree a)
-  deriving (Eq, Show) 
-
-instance Functor Tree where
-   fmap :: (a -&gt; b) -&gt; Tree a -&gt; Tree b
-   fmap _ Leaf     = Leaf
-   fmap f (Bin l x r) = Bin (fmap f l) (f x) (fmap f r)
-
-instance Applicative Tree where
-  pure x = Bin (pure x) x (pure x)
-  (bin lf f rf) (&lt;*&gt;) (Bin lx x rx) = Bin (lf &lt;*&gt; lx ) (f x) (rf &lt;*&gt; rx)      
-</code></pre></div>
-
-<p>and apply functions to it; for instance, I can add two trees together.</p>
-<div class="highlight"><pre><span></span><code>t1 = toTree [1..5]
-t2 = toTree [6..10]
-pure (+) &lt;*&gt; t1 &lt;*&gt; t2
-Bin (Bin Leaf 9 (Bin Leaf 11 Leaf)) 7 (Bin Leaf 13 (Bin Leaf 15 Leaf))
-</code></pre></div>
-
-<p>The Applica­tive type­class has two func­tions pure and &lt;*&gt;. pure takes a type a and turns it into an Applica­tive (and a Func­tor). We can think of pure as turn­ing a into a default instance of the Applica­tive type­class.</p>
-<p>if we would take a list and make it an instance of the Applicative class we have to implement pure. Implementing here to me means make sense of what the default instance of a list would be. The default instance of a list in my opinion can't be an empty list. If we think of a list, a list has elements, 1,2, ..., n. The empty list is a rarity, that wouldn't make it the default in my opinion. A list with elements has a default the list with one element.  </p>
-<div class="highlight"><pre><span></span><code><span class="n">instance</span><span class="w"> </span><span class="n">Applicative</span><span class="w"> </span><span class="err">[]</span><span class="w"> </span><span class="k">where</span><span class="w"> </span>
-<span class="w">  </span><span class="n">pure</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">x</span><span class="o">]</span>
-</code></pre></div>
-
-<p>Now we would have to consider how to implement an applicative map &lt;*&gt; so that it make sense. We want to map functions with multiple or no arguments. We want to map a list on a list basically </p>
-<div class="highlight"><pre><span></span><code><span class="n">instance</span><span class="w"> </span><span class="n">Applicative</span><span class="w"> </span><span class="err">[]</span><span class="w"> </span><span class="k">where</span><span class="w"> </span>
-<span class="w">  </span><span class="n">pure</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">x</span><span class="o">]</span>
-<span class="w">  </span><span class="n">fs</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">gs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">f x  | f &lt;- fs, x &lt;- xs</span><span class="o">]</span>
-</code></pre></div>                </article>
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -147,8 +181,8 @@ Bin (Bin Leaf 9 (Bin Leaf 11 Leaf)) 7 (Bin Leaf 13 (Bin Leaf 15 Leaf))
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/function-composition-a-deeper-look.html" rel="bookmark"
-                           title="Permalink to Function composition a deeper look">Function composition a deeper look</a></h1>
+                    <h1><a href="/functors-in-python.html" rel="bookmark"
+                           title="Permalink to Functors in Python">Functors in Python</a></h1>
                 </header>
 
                 <div class="entry-content">
@@ -166,8 +200,8 @@ Bin (Bin Leaf 9 (Bin Leaf 11 Leaf)) 7 (Bin Leaf 13 (Bin Leaf 15 Leaf))
         </address>
 <p>In <a href="/category/posts.html">posts</a>.</p>
 
-</footer><!-- /.post-info -->                <p>A look at how Category Theory underpins function composition.</p>
-                <a class="readmore" href="/function-composition-a-deeper-look.html">read more</a>
+</footer><!-- /.post-info -->                <p>A look at how to implement Functors in Python</p>
+                <a class="readmore" href="/functors-in-python.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
 
