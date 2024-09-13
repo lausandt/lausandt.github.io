@@ -30,12 +30,12 @@
 
     <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2024-08-07T00:00:00+02:00">
-                Published: wo 07 augustus 2024
+        <abbr class="published" title="2024-09-12T00:00:00+02:00">
+                Published: do 12 september 2024
         </abbr>
 		<br />
-        <abbr class="modified" title="2024-08-07T00:00:00+02:00">
-                Updated: wo 07 augustus 2024
+        <abbr class="modified" title="2024-09-13T00:00:00+02:00">
+                Updated: vr 13 september 2024
         </abbr>
 
         <address class="vcard author">
@@ -44,7 +44,7 @@
 <p>In <a href="/category/posts.html">posts</a>.</p>
 
 </footer><!-- /.post-info -->      <hr>
-<p>If you are like me and love to program both in Python and in Haskell then you might stumble on some attempts to implement a Functor in Haskell. Take as example the Functor class below, adopted slightly from <a href="https://www.arjancodes.com/blog/python-functors-and-monads/">Arjan Codes</a>, I added some code to keep it simple and make the example work, so you can follow along. </p>
+<p>If you are like me and love to program both in Python and in Haskell, then you might stumble on some attempts to implement a Functor in Python. Take as an example the Functor class below, adopted slightly from Arjan Codes https://www.arjancodes.com/blog/python-functors-and-monads/, I added some code to keep it simple and make the example work, so you can follow along. </p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="nb">pow</span><span class="p">,</span> <span class="n">add</span> 
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
@@ -62,31 +62,31 @@
 <span class="n">Functor</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">pow</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> 
 </code></pre></div>
 
-<p>I have four problems with this example:</p>
+<p>I have some problems with this example:</p>
 <ol>
-<li>The first problem I have is with the stated goal of the Functor; Functors allow for clean, concise pipelines. No that is not the goal of a Functor. Functors allow for mappings between categories, that is also precisely the goal of the Functor, to map between to categories. Okay that doesn't explain a lot but we will get back to this shortly.</li>
-<li>You cannot really map on an integer as it is a primitive type and mapping is done on wrapped types.</li>
+<li>The first problem I have is with the stated goal of the Functor: "Functors allow for clean, concise pipelines." That is not the goal of a functor. Functors allow for mappings between categories; that is also precisely the goal of the functor. Of course that sounds a bit odd, so understand functors to allow mapping on wrapped types.</li>
+<li>You cannot really map on an integer as it is a primitive type, and mapping is done on wrapped types.</li>
 <li>A functor should not be implemented as a class but as an interface.</li>
-<li>What they say is a Monad simply is not.</li>
+<li>What they say is a monad simply is not.</li>
 </ol>
-<p>Before I will explain you why these are problems, I first want to say that this article in no manner whatsoever suggest the <a href="https://www.arjancodes.com/blog/python-functors-and-monads/">Arjan Codes</a> is bad, it is probably excellent and worth your attention, I have no opinion on the content of this site other than, on this article. </p>
-<p>To understand what a Functor does we should start with the <code>map</code> function, that represents a mapping in Python. </p>
+<p>Before I explain to you why these are problems, I first want to say that this article in no manner whatsoever suggests the <a href="https://www.arjancodes.com/blog/python-functors-and-monads/">Arjan Codes</a> is bad; it is probably excellent and worth your attention. I have no opinion on the content of this site other than on this article. </p>
+<p>To understand what a functor does, we should start with the <code>map</code> function, which represents a mapping in Python</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">succ</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> 
     <span class="k">return</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
 
 <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">succ</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]))</span> <span class="o">==</span>   <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 </code></pre></div>
 
-<p>What does the above map function do? It maps the successor function from the domain {1,2,3,4,5} to <br>
+<p>What does the above map function do? It maps the successor function from the domain {1,2,3,4,5} to
 the codomain {2,3,4,5,6}. The application of such a function to all elements in a domain to elements in a codomain is called a mapping. Pictorial it is this familiar drawing:</p>
 <p><img alt="domain / codomain" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Codomain2.SVG/500px-Codomain2.SVG.png"></p>
-<p>Which we probably all know from middle school math classes. Hence that we can not map succ to 1, we do not map from an element but from a collection of elements, usually in maths a set, in Python an iterable. The map function allows you to operate on elements of an underlying data structure without changing that data structure. This is exactly how a functor should be understood, as allowing a map function to operate without changing the underlying structure.</p>
+<p>Which we probably all know from middle school math classes. Hence that we cannot map succ to 1, we do not map from an element but from a collection of elements, usually in math a set, in Python an iterable. The map function allows you to operate on elements of an underlying data structure without changing that data structure. This is exactly how a functor should be understood, as allowing a map function to operate without changing the underlying structure.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">succ</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span> <span class="o">==</span>  <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 </code></pre></div>
 
 <p>The map function in Python is limited to iterables. What is an iterable in Python? Anything that has a next function and a StopIteration error, which is Python's manner to answer the question hasNext? </p>
-<p>If we consider an iterable to wrap its elements in a list, set, or whatever iterable you can imagine, then we could ask ourselves the question how can we use map on a with a structure wrapped element, where that structure is not an iterable?</p>
-<p>Consider the following example of map not working:  </p>
+<p>If we consider an iterable to wrap its elements in a list, set, or whatever iterable you can imagine, then we could ask ourselves the question, How can we use map on a with a structure-wrapped element where that structure is not an iterable?</p>
+<p>Consider the following example of map not working: </p>
 <div class="highlight"><pre><span></span><code><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Arjan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">Laurens</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="nb">dict</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">succ</span><span class="p">,</span><span class="n">d</span><span class="p">))</span>
 </code></pre></div>
@@ -113,9 +113,9 @@ the codomain {2,3,4,5,6}. The application of such a function to all elements in 
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">succ</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="o">==</span>  <span class="p">{</span><span class="s1">&#39;Arjan&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Laurens&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
 </code></pre></div>
 
-<p>As you can see to be able to add to the value in the dictionary requires in Python to unpack the items in the dictionary and then apply the function on the value. We cannot map directly on a dict. To be able to do so requires a more generic map function, and that is what a functor is. A functor for all intents and purposes is a generalisation of map, it generalises on the structure that holds the element. </p>
-<p>The most common example to illustrate what a functor can do is with a Maybe type, <a href="https://www.arjancodes.com/blog/python-functors-and-monads/">Arjan Codes</a>. also uses the maybe as an example but it is more instructive use a bit of Haskell, which knows the Maybe type. </p>
-<div class="highlight"><pre><span></span><code>Maybe a = Nothing | Just a
+<p>As you can see, being able to add to the value in the dictionary requires in Python to unpack the items in the dictionary and then apply the function to the value. We cannot map directly on a dict. To be able to do so requires a more generic map function, and that is what a functor is. A functor, for all intents and purposes, is a generalisation of map, it generalises on the structure that holds the element. </p>
+<p>The most common example to illustrate what a functor can do is with a Maybe type <a href="https://www.arjancodes.com/blog/python-functors-and-monads/">Arjan Codes</a>. also uses the maybe as an example, but it is more instructive to use a bit of Haskell, which knows the Maybe type.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">Maybe</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="n">a</span>
 </code></pre></div>
 
 <p>This you should interpret pretty must as you read it. We have Maybe value which wraps an unspecified type, a. That Maybe value consists of one of two things:</p>
@@ -124,36 +124,36 @@ the codomain {2,3,4,5,6}. The application of such a function to all elements in 
 <li>Just a value of that type</li>
 </ol>
 <p>For instance we can have Maybe Int. </p>
-<div class="highlight"><pre><span></span><code>Nothing
-Just 42
+<div class="highlight"><pre><span></span><code><span class="kt">Nothing</span>
+<span class="kt">Just</span><span class="w"> </span><span class="mi">42</span>
 </code></pre></div>
 
-<p>Now coming back to our functor how can we generalise our map function to also be able to use map our map function on it. Remember we want to apply a function to the element and not the structure. Haskell's answer to this problem is to use a Java like interface (akin to an abstract base class in Python), in Haskell an interface is called a typeclass. We declare the Maybe type to be an instance of the Functor typeclass. </p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">Functor</span> <span class="nb">f</span> <span class="n">where</span>
-  <span class="n">fmap</span> :: (<span class="n">a</span> -&gt; <span class="n">b</span>) -&gt; <span class="nb">f</span> <span class="n">a</span> -&gt; <span class="nb">f</span> <span class="n">b</span>
+<p>Now coming back to our functor, how can we generalise our map function to also be able to use our map function on it? Remember, we want to apply a function to the element and not the structure. Haskell's answer to this problem is to use a Java-like interface (akin to an abstract base class in Python); in Haskell, an interface is called a typeclass. We declare the Maybe type to be an instance of the Functor typeclass.  </p>
+<div class="highlight"><pre><span></span><code><span class="kr">class</span><span class="w"> </span><span class="kt">Functor</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">b</span>
 </code></pre></div>
 
-<p>fmap here is what in Python we call an abstract method, meaning there is no adjoining implementation. For the Maybe type to be an instance (implementing / subclassing) the typeclass as in Python or Java we would have to give a meaning to fmap for the Maybe type. In Haskell:</p>
-<div class="highlight"><pre><span></span><code>instance Functor Maybe where
-  fmap f Nothing = Nothing
-  fmap f (Just a)  = Just (f a)
+<p>In Python, fmap is referred to as an abstract method, as it lacks an adjoining implementation. For the Maybe type to be an instance (implementing or subclassing) of the typeclass, as in Python or Java, we would have to give a meaning to fmap for the Maybe type. :</p>
+<div class="highlight"><pre><span></span><code><span class="kr">instance</span><span class="w"> </span><span class="kt">Functor</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Nothing</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="kt">Just</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w">  </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
 </code></pre></div>
 
-<p>Again Haskell so just a bit of clarification. It says for the Maybe type if fmap a function (f) on a Nothing value, we get a Nothing back. If we fmap function f on the (Just a) value we get a Just value back and we apply f on the wrapped value a. If you would run the following in GHCI (the Haskell interpreter, also available online <a href="https://www.tryhaskell.org/">Try Haskell</a> you will get the following.</p>
-<div class="highlight"><pre><span></span><code>fmap (+1) (Just 41) = Just 42
+<p>Again, Haskell, so just a bit of clarification. It says for the Maybe type, if fmap a function (f) on a Nothing value, we get a Nothing back. If we fmap function f on the (Just a) value, we get a Just value back, and we apply f on the wrapped value a. If you run the following in GHCI (the Haskell interpreter, also available online <a href="https://www.tryhaskell.org/">Try Haskell</a> you will get the following.</p>
+<div class="highlight"><pre><span></span><code><span class="nf">fmap</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Just</span><span class="w"> </span><span class="mi">41</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="mi">42</span>
 </code></pre></div>
 
 <p>A Haskell list implements the Functor typeclass. So I want to use fmap to map over a list I can. </p>
-<div class="highlight"><pre><span></span><code>fmap (+1) [1..5] = [2,3,4,5,6]
+<div class="highlight"><pre><span></span><code><span class="nf">fmap</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="o">..</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
 </code></pre></div>
 
 <p>For those curious the list implementation of the Functor type class is:</p>
-<div class="highlight"><pre><span></span><code>instance Functor [] where
-  fmap f [] = []
-  fmap f (a:as) = f a : fmap f as
+<div class="highlight"><pre><span></span><code><span class="kr">instance</span><span class="w"> </span><span class="kt">Functor</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="kt">:</span><span class="n">as</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">as</span>
 </code></pre></div>
 
-<p>Haskell uses a lot of pattern matching (Python is starting to) but it basically says if I fmap f on an empty list I get that list back, if I fmap f on a list represenred as <code>(a:as)</code> then I apply the function to a and cons that on a recursive call to fmap. If you do not understand that sentence, do not worry we are programming in Python, not Haskell.</p>
+<p>Haskell uses a lot of pattern matching (Python is starting to), but it basically says if I fmap f on an empty list, I get that list back; if I fmap f on a list represented as <code>(a:as),</code> then I apply the function to a and cons that on a recursive call to fmap. If you do not understand that sentence, do not worry; we are programming in Python, not Haskell.</p>
 <p>Let's see if we can implement this in Python:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
@@ -194,8 +194,8 @@ Just 42
 <div class="highlight"><pre><span></span><code><span class="n">Just</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;42&quot;</span>
 </code></pre></div>
 
-<p>Now we have created a Maybe type that is a Functor, both the Just and Nothing classes subclass the Maybe. </p>
-<p>You might wonder why it is enough to implement only fmap for something to be a functor. This is due to the mathetical definition of a Functor, which I now am going to give but feel free skip it. </p>
+<p>Now we have created a Maybe type that is a Functor; both the Just and Nothing classes subclass the Maybe. </p>
+<p>You might wonder why it is enough to implement only fmap for something to be a functor. This is due to the mathetical definition of a functor, which I now am going to give but feel free to skip. </p>
 <p>Let <em>C</em> and <em>D</em> be categories. A functor <span class="math">\(F: A \rightarrow B\)</span> associates:</p>
 <ul>
 <li>to every object <span class="math">\(x \in A\)</span> an object <span class="math">\(F x \in B\)</span></li>
@@ -206,9 +206,9 @@ Just 42
 <li><span class="math">\(F(ID_x) = ID_F(x)\)</span> for every object <span class="math">\(x \in A\)</span> </li>
 <li><span class="math">\(F(g \circ f) = F(g) \circ F(f)\)</span> for all morphisms <span class="math">\( f: X \rightarrow Y\)</span> and <span class="math">\(g: Y \rightarrow Z \in B\)</span></li>
 </ol>
-<p>Pictures speak more than words so <img alt="Functor" src="https://nikgrozev.com/images/blog/Functional%20Programming%20and%20Category%20Theory%20Part%201%20-%20Categories%20and%20Functors/functor.jpg"></p>
-<p>A and B are the categories, F is the functor. We only need to be able to map from A to B to be a functor all other we can derive from the fact that A and B are categories.  </p>
-<p>But now of course you want a use case. For that I will introduce another Functor we can use to propagate an error message through a pipeline, for instance in an API. </p>
+<p>Pictures speak more than words, so <img alt="Functor" src="https://nikgrozev.com/images/blog/Functional%20Programming%20and%20Category%20Theory%20Part%201%20-%20Categories%20and%20Functors/functor.jpg"></p>
+<p>A and B are the categories; F is the functor. We only need to be able to map from A to B to be a functor; everything else we can derive from the fact that A and B are categories.</p>
+<p>But now, of course, you want a use case. For that, I will introduce another Functor we can use to propagate an error message through a pipeline, for instance in an API. </p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Either</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
 
     <span class="nd">@abstractmethod</span>
@@ -242,11 +242,11 @@ Just 42
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exc</span>
 </code></pre></div>
 
-<p>Now we can propagate the error through our pipeline and not have it fail. Furthermore at the end of our pipeline we can unwrap our value for useful inspection. These types of continuation even after failure is very useful in amongst other things web api's.     </p>
+<p>Now we can propagate the error through our pipeline and not have it fail. Furthermore, at the end of our pipeline, we can unwrap our value for useful inspection. These types of continuation even after failure are very useful in, amongst other things, web APIs. </p>
 <div class="highlight"><pre><span></span><code><span class="n">Right</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span>  <span class="s1">&#39;division by zero&#39;</span>
 </code></pre></div>
 
-<p>To answer the last problem with the code why their Maybe class is not a monad is because for anything to be a Monad we need at least to implement the bind function. No bind function no monad. </p>
+<p>To answer the last problem with the code why their Maybe class is not a monad is because for anything to be a Monad we need at least to implement the bind function. No bind function, no Monad. See below for an example of a bind function in Python. </p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Maybe</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Maybe</span><span class="p">[</span><span class="n">U</span><span class="p">]:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">new_val</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
