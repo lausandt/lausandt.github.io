@@ -40,7 +40,7 @@ Before we look at what this map function does, we need to understand the impleme
 
 &lt;p&gt;What does the above map function do? It maps the &lt;span class="math"&gt;\(2^x\)&lt;/span&gt; function on the domain {1,2,3,4,5} to
 the codomain {2,4,8,16,32}. Pictorial it is this familiar drawing, which we all probably know from a secondary school math class:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="map.jpg" src="map.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="map" src="map.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;We map our function to all elements in domain X and to elements in domain Y. In the example above, the structure of both domains is a list. That neatly brings me to a definition of the map function.&lt;/p&gt;
 &lt;p&gt;A map in mathematics refers to a special kind of function, a &lt;strong&gt;homomorphism&lt;/strong&gt;, which is a structure-preserving function between structures of the same type. The term endofunctor, which Arjan codes uses, is basically the same but applied to category theory instead of algebra, but as algebraic structures are really categories, there is no difference. I am boring you, so let define a programming map function as:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Definition map: A structure-preserving function between two sequences of the same type&lt;/strong&gt; &lt;/p&gt;
