@@ -4,15 +4,14 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>Functors in Python</title>
+        <title>Lau Sandt's thoughts on programming - posts</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
-        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Lau Sandt's thoughts on programming & wine Atom Feed" />
-        <meta name="description" content="A look at how to implement Functors in Python" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Lau Sandt's thoughts on programming Atom Feed" />
 </head>
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="/">Lau Sandt's thoughts on programming & wine</a></h1>
+                <h1><a href="/">Lau Sandt's thoughts on programming</a></h1>
                 <nav><ul>
                     <li><a href="/pages/about.html">about</a></li>
                     <li><a href="/pages/contact.html">contact</a></li>
@@ -20,15 +19,10 @@
                     <li><a href="/category/reviews.html">reviews</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="/functors-in-python.html" rel="bookmark"
-           title="Permalink to Functors in Python">Functors in Python</a></h1>
-    </header>
 
-    <div class="entry-content">
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/functors-in-python.html">Functors in Python</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2024-09-12T00:00:00+02:00">
                 Published: do 12 september 2024
@@ -43,7 +37,7 @@
         </address>
 <p>In <a href="/category/posts.html">posts</a>.</p>
 
-</footer><!-- /.post-info -->      <h2>Functors in Python</h2>
+</footer><!-- /.post-info --><h2>Functors in Python</h2>
 <hr>
 <p>If you are like me and love to program both in Python and in Haskell, then you might stumble on some attempts to implement a functor in Python. I always wonder why, Python is not and will never be a functional language. Concepts as functors and monads have little use in an imperative language where side effects are the norm, not the exception. If you feel like writing functional code, write in a functional language, like Haskell, Lisp or Scala. </p>
 <p>However you might just be curious and want to know what a functor is and what its uses are, but you can't be bothered to learn a functional languager and why not? In that case you might stumble on this example, adopted slightly from <a href="https://www.arjancodes.com/blog/python-functors-and-monads/">Arjan Codes</a>, I added some code to keep it simple and make the example work, so you can follow along.  </p>
@@ -84,7 +78,7 @@ Before we look at what this map function does, we need to understand the impleme
 
 <p>What does the above map function do? It maps the <span class="math">\(2^x\)</span> function on the domain {1,2,3,4,5} to
 the codomain {2,4,8,16,32}. Pictorial it is this familiar drawing, which we all probably know from a secondary school math class:</p>
-<p><img alt="map" src="map.jpg"></p>
+<p><img alt="map" src="https://media.geeksforgeeks.org/wp-content/uploads/20230602125603/Function.png"></p>
 <p>We map our function to all elements in domain X and to elements in domain Y. In the example above, the structure of both domains is a list. That neatly brings me to a definition of the map function.</p>
 <p>A map in mathematics refers to a special kind of function, a <strong>homomorphism</strong>, which is a structure-preserving function between structures of the same type. The term endofunctor, which Arjan codes uses, is basically the same but applied to category theory instead of algebra, but as algebraic structures are really categories, there is no difference. I am boring you, so let define a programming map function as:</p>
 <p><strong>Definition map: A structure-preserving function between two sequences of the same type</strong> </p>
@@ -323,11 +317,40 @@ the codomain {2,4,8,16,32}. Pictorial it is this familiar drawing, which we all 
     (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
-    </div><!-- /.entry-content -->
+</script>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
 
-  </article>
-</section>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/function-composition-a-deeper-look.html" rel="bookmark"
+                           title="Permalink to Function composition a deeper look">Function composition a deeper look</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2024-08-07T00:00:00+02:00">
+                Published: wo 07 augustus 2024
+        </abbr>
+		<br />
+        <abbr class="modified" title="2024-08-07T00:00:00+02:00">
+                Updated: wo 07 augustus 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/lau-sandt.html">Lau Sandt</a>
+        </address>
+<p>In <a href="/category/posts.html">posts</a>.</p>
+
+</footer><!-- /.post-info -->                <p>A look at how Category Theory underpins function composition.</p>
+                <a class="readmore" href="/function-composition-a-deeper-look.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
