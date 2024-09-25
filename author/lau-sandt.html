@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Lau Sandt's thoughts on programming & wine - Lau Sandt</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Lau Sandt's thoughts on programming & wine Atom Feed" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Lau Sandt's thoughts on programming & wine</a></h1>
+                <nav><ul>
+                    <li><a href="/pages/about.html">about</a></li>
+                    <li><a href="/pages/contact.html">contact</a></li>
+                    <li><a href="/category/posts.html">posts</a></li>
+                    <li><a href="/category/reviews.html">reviews</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/functors-in-python.html">Functors in Python</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2024-09-12T00:00:00+02:00">
+                Published: do 12 september 2024
+        </abbr>
+		<br />
+        <abbr class="modified" title="2024-09-25T00:00:00+02:00">
+                Updated: wo 25 september 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/lau-sandt.html">Lau Sandt</a>
+        </address>
+<p>In <a href="/category/posts.html">posts</a>.</p>
+
+</footer><!-- /.post-info --><h2>Functors in Python</h2>
+<hr>
+<p>If you are like me and love to program both in Python and in Haskell, then you might stumble on some attempts to implement a functor in Python. I always wonder why, Python is not and will never be a functional language. Concepts as functors and monads have little use in an imperative language where side effects are the norm, not the exception. If you feel like writing functional code, write in a functional language, like Haskell, Lisp or Scala. </p>
+<p>However you might just be curious and want to know what a functor is and what its uses are, but you can't be bothered to learn a functional languager and why not? In that case you might stumble on this example, adopted slightly from <a href="https://www.arjancodes.com/blog/python-functors-and-monads/">Arjan Codes</a>, I added some code to keep it simple and make the example work, so you can follow along.  </p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="nb">pow</span><span class="p">,</span> <span class="n">add</span> 
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+<span class="n">U</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Functor</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Functor[U]&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Functor</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
+<span class="n">Functor</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">pow</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">4</span>
+</code></pre></div>
+
+<p>I have several problems with this example and the article. For instance, I would suggest their motivation for a functor is at best secondary. I also find their implementation of the functor not great; they use a class where I would use an abstract base class. Finally, their implementation of a Monad is not a Monad. I think you can do better, but before I attempt to explain a Functor in Python, I first want to say that this article in no manner whatsoever suggests the Arjan Codes is bad; it is probably excellent and worth your attention. I have no opinion on the content of this site other than on this article. </p>
+<h2>Functors are mappings</h2>
+<p>Understanding functors is not complicated. Yes functors are a concept from category theory, yes when talking about functors in the context of programming we are talking about endofunctors, indeed there are morphisms involved, and yes some abstract math is involved, but none of that really matters when you want to understand a functor. A functor is simply a mapping, you can understand a functor best by understanding Python's regular map function and its limitations. Let's look at the Python map function in action:   </p>
+<div class="highlight"><pre><span></span><code><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">pow</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]))</span> <span class="o">==</span>  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+</code></pre></div>
+
+<p><strong>A map object</strong>  <br>
+Before we look at what this map function does, we need to understand the implementation detail of the map function in Python because it will be a bit confusing not to. Python's map function has the following signature, which I have adapted slightly to include typing. </p>
+<div class="highlight"><pre><span></span><code><span class="nf">map</span><span class="p">(</span><span class="n">func</span><span class="o">:</span><span class="w"> </span><span class="n">Callable</span><span class="p">,</span><span class="w"> </span><span class="n">iterable</span><span class="o">:</span><span class="n">Iterable</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Iterator</span><span class="o">:</span>
+</code></pre></div>
+
+<p>The map function accepts as arguments a function, an iterable, and returns an iterator. For the purpose of this discussion, further information on iterables and iterators is not necessary, so I will omit it.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">pow</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>&lt;map at 0x7f527c67f310&gt;
+</code></pre></div>
+
+<p>What does the above map function do? It maps the <span class="math">\(2^x\)</span> function on the domain {1,2,3,4,5} to
+the codomain {2,4,8,16,32}. Pictorial it is this familiar drawing, which we all probably know from a secondary school math class:</p>
+<p><img alt="map.jpg" src="map.jpg"></p>
+<p>We map our function to all elements in domain X and to elements in domain Y. In the example above, the structure of both domains is a list. That neatly brings me to a definition of the map function.</p>
+<p>A map in mathematics refers to a special kind of function, a <strong>homomorphism</strong>, which is a structure-preserving function between structures of the same type. The term endofunctor, which Arjan codes uses, is basically the same but applied to category theory instead of algebra, but as algebraic structures are really categories, there is no difference. I am boring you, so let define a programming map function as:</p>
+<p><strong>Definition map: A structure-preserving function between two sequences of the same type</strong> </p>
+<p>I prefer to use the term sequence (an enumerated collection of objects) instead of an iterable, as the latter is a very specific Python term. </p>
+<p>If you are only interested in the Python implementation of the functor, you can stop reading, for Python <code>map</code> is the functor! Nothing you didn't know already, except maybe that the use of <code>map</code> is not advised by Python. You should use a generator or list comprehension instead.  </p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="mi">2</span><span class="o">**</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+</code></pre></div>
+
+<p>There are several advantages to using the generator (a list comprehension is just a special case of a generator), the code is easier to read, and you get to use guards.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">doctest</span> <span class="kn">import</span> <span class="n">testmod</span>
+<span class="k">def</span> <span class="nf">even</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    0 is even </span>
+<span class="sd">    1 is not even </span>
+<span class="sd">    2 is even</span>
+<span class="sd">    &gt;&gt;&gt; even(0)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; even(1)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; even(2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+
+<span class="n">testmod</span><span class="p">()</span> <span class="o">==</span> <span class="n">TestResults</span><span class="p">(</span><span class="n">failed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">attempted</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="mi">2</span><span class="o">**</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span> <span class="k">if</span> <span class="n">even</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+</code></pre></div>
+
+<p>I can do the same with <code>map</code>, it is a matter of preference I would say.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">2</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">even</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])))</span> <span class="o">==</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+</code></pre></div>
+
+<h4>A generalisation of map</h4>
+<p>If you are still interested in the functor and you are not put off by the fact that Python is not a functional language, then continue reading. A functor is, in all intents and purposes, a generalisation of <code>map</code>. It is a generalisation on the structure. A functor allows you to map over more than iterables / sequences. </p>
+<p>Consider a list as wrapping elements in a structure; in languages like Haskell (purely functional) and Scala (functional), you know other wrapped types that you can't iterate over, simply because next has no meaning for these types. The map function would not work on these wrapped types. The example most commonly used to explain those wrapped types is the Maybe type. In Haskell defined as such:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">data</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="n">a</span>
+</code></pre></div>
+
+<p>This you should interpret pretty must as you read it. We have Maybe value which wraps an unspecified type, a. That Maybe value consists of one of two things:</p>
+<ul>
+<li>Nothing</li>
+<li>Just a value of that type</li>
+</ul>
+<p>For instance we can have Maybe Int.</p>
+<ul>
+<li>Nothing</li>
+<li>Just 42</li>
+</ul>
+<p>We can't use <code>map</code> here; <code>map</code> needs a sequence after all; there are no sequences here. How can we generalise our map function to also be able to use it on a Maybe type? We want to apply a function to the element and not the structure. Haskell's answer to this problem is to use a Java-like interface (akin to an abstract base class in Python); in Haskell, an interface is called a typeclass. We declare the Maybe type to be an instance of the Functor typeclass. </p>
+<div class="highlight"><pre><span></span><code><span class="kr">class</span><span class="w"> </span><span class="kt">Functor</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">b</span>
+</code></pre></div>
+
+<p>In Python, fmap is referred to as an abstract method, as it lacks an adjoining implementation. For the Maybe type to be an instance (implementing or subclassing) of the typeclass, as in Python or Java, we would have to give a meaning to fmap for the Maybe type:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">instance</span><span class="w"> </span><span class="kt">Functor</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Nothing</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="kt">Just</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w">  </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Again, Haskell, so just a bit of clarification. It says for the Maybe type, if fmap a function (f) on a Nothing value, we get a Nothing back. If we fmap function f on the (Just a) value, we get a Just value back, and we apply f on the wrapped value a. If you run the following in GHCI (the Haskell interpreter, also available online at https://www.tryhaskell.org/ you will get the following:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">fmap</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Just</span><span class="w"> </span><span class="mi">41</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="mi">42</span>
+</code></pre></div>
+
+<p>A Haskell list implements the Functor typeclass. So I want to use fmap to map over a list I can. </p>
+<div class="highlight"><pre><span></span><code><span class="nf">fmap</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="o">..</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="w"> </span><span class="p">]</span>
+</code></pre></div>
+
+<p>For those curious the list implementation of the Functor type class is:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">instance</span><span class="w"> </span><span class="kt">Functor</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">  </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="kt">:</span><span class="n">as</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">as</span>
+</code></pre></div>
+
+<p>Haskell uses a lot of pattern matching (Python is starting to), but it basically says if I fmap f on an empty list, I get that list back; if I fmap f on a list represented as <code>(a:as),</code> then I apply the function to a and cons that on a recursive call to fmap. If you do not understand that sentence, do not worry; we are programming in Python, not Haskell.</p>
+<p>Let's see if we can implement this in Python:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+
+<span class="k">class</span> <span class="nc">Maybe</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+
+<span class="k">class</span> <span class="nc">Just</span><span class="p">(</span><span class="n">Maybe</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Maybe</span><span class="p">[</span><span class="n">U</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_value</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Just</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Nothing</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">Nothing</span><span class="p">(</span><span class="n">Maybe</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span> 
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Maybe</span><span class="p">[</span><span class="n">U</span><span class="p">]:</span> 
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">Just</span><span class="p">(</span><span class="mi">41</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">==</span> <span class="s2">&quot;Just 42&quot;</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">Nothing</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">add</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>  <span class="o">==</span> <span class="s2">&quot;Nothing&quot;</span> 
+</code></pre></div>
+
+<h4>Use case</h4>
+<p>The question you should now be asking is: Do I need this in Python? Can you give me a use case? To answer the first question, no, you can program just fine without functors in Python; if anything, to me, they seem to be alien to the language. The answer to the question to the second question is sure. Imagine you have an API and you want an error message to propagate through a pipeline without stopping the pipeline. Using the following structure, we could achieve that quite easily: </p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Either</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+
+<span class="k">class</span> <span class="nc">Right</span><span class="p">(</span><span class="n">Either</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span> 
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="n">value</span> 
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Either</span><span class="p">[</span><span class="n">U</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_val</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Right</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Left</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
+
+    <span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+
+<span class="k">class</span> <span class="nc">Left</span><span class="p">(</span><span class="n">Either</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span> 
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">exc</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="n">exc</span> 
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Either</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">Left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exc</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">Right</span><span class="p">(</span><span class="s2">&quot;42&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Left division by zero&quot;</span>
+</code></pre></div>
+
+<p>Which we can unwrap of course for further use</p>
+<div class="highlight"><pre><span></span><code><span class="n">Right</span><span class="p">(</span><span class="s2">&quot;42&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;division by zero&#39;</span>
+</code></pre></div>
+
+<h4>Monad</h4>
+<p>In the article from Arjan's Code, they suggest their implementation of Maybe is a monad. It is not; it is a functor. This is an easy mistake to make, for a monad is a functor, but a functor is not a monad. to implement a monad requires the implementation of a <code>return</code>, <code>bind</code> or <code>liftM</code> function.</p>
+<p>The monad is a very useful concept in a purely functional language, where you need to interact with an inpure world, or heavens forbid, you want a mutable state. Python is not a pure language and can interact excellently with an inpure world, and handles mutable states naturally. </p>
+<p>A monad you can understand as a toolkit to build programming patterns, very much like the iterator pattern. This side of the monad is very interesting and perhaps worth exploring further, even in Python. However, that requires a whole new article.</p>
+<h4>Conclusion</h4>
+<p>If you get asked about a functor in Python, just state that <code>map</code> is a limited functor and that Python has different solutions to tackle problems you would use a functor for in functional languages.</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/function-composition-a-deeper-look.html" rel="bookmark"
+                           title="Permalink to Function composition a deeper look">Function composition a deeper look</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2024-08-07T00:00:00+02:00">
+                Published: wo 07 augustus 2024
+        </abbr>
+		<br />
+        <abbr class="modified" title="2024-08-07T00:00:00+02:00">
+                Updated: wo 07 augustus 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/lau-sandt.html">Lau Sandt</a>
+        </address>
+<p>In <a href="/category/posts.html">posts</a>.</p>
+
+</footer><!-- /.post-info -->                <p>A look at how Category Theory underpins function composition.</p>
+                <a class="readmore" href="/function-composition-a-deeper-look.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/data-analysis-with-python-and-pyspark.html" rel="bookmark"
+                           title="Permalink to Data Analysis with Python and PySpark">Data Analysis with Python and PySpark</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2024-08-05T00:00:00+02:00">
+                Published: ma 05 augustus 2024
+        </abbr>
+		<br />
+        <abbr class="modified" title="2024-08-06T00:00:00+02:00">
+                Updated: di 06 augustus 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/lau-sandt.html">Lau Sandt</a>
+        </address>
+<p>In <a href="/category/reviews.html">reviews</a>.</p>
+
+</footer><!-- /.post-info -->                <p>A review of Johnathan Rioux's Data Analysis with Python and PySpark</p>
+                <a class="readmore" href="/data-analysis-with-python-and-pyspark.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://github.com/lausandt">GitHub</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
